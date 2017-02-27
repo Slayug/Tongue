@@ -17,3 +17,7 @@ Debug mode show you if there is a missing translation.
 By default debug mode is enable. You can change it by two ways:
   - tongue.setDebug( false );
   - Or directly in the class file, in constructor.
+
+
+TODO:
+Get the translation from the url, navigator language.
