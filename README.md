@@ -13,6 +13,7 @@ You can easily change the translation with: tongue.switchLanguage('fr');<br>
 ** If you change something dynamically on your page, with some text, you should update the translation **<br>
 tongue.update();<br>
 
+Debug mode show you if there is a missing translation.
 By default debug mode is enable. You can change it by two ways:
   - tongue.setDebug( false );
   - Or directly in the class file, in constructor.
