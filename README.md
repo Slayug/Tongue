@@ -9,6 +9,8 @@ Example on the index.html<br>
 Summary<br>
 Instantiate the class: tongue = new Tongue('en');<br>
 You can easily change the translation with: tongue.switchLanguage('fr');<br>
+Put yours translations in translations folder.
+Make the link with yours translations on balise: &#60;p class="word.toast"&#62&#60;/p&#62;
 
 ** If you change something dynamically on your page, with some text, you should update the translation **<br>
 tongue.update();<br>
