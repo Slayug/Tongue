@@ -5,13 +5,13 @@ Manage yours translations dynamically on your website. No reload page !
 
 You can use the TypeScript version or the prototype js.
 
-Example on the index.html
-Summary
-Instantiate the class: tongue = new Tongue('en');
-You can easily change the translation with: tongue.switchLanguage('fr');
+Example on the index.html<br>
+Summary<br>
+Instantiate the class: tongue = new Tongue('en');<br>
+You can easily change the translation with: tongue.switchLanguage('fr');<br>
 
-** If you change something dynamically on your page, with some text, you should update the translation **
-tongue.update();
+** If you change something dynamically on your page, with some text, you should update the translation **<br>
+tongue.update();<br>
 
 By default debug mode is enable. You can change it by two ways:
   - tongue.setDebug( false );
