@@ -13,6 +13,10 @@ var Tongue = (function () {
     **/
     Tongue.prototype.setDebug = function (debug) {
         this.debug = debug;
+        this.update();
+    };
+    Tongue.prototype.isDebug = function () {
+        return this.debug;
     };
     Tongue.prototype.loadJSON = function (lang, callback) {
         var xobj = new XMLHttpRequest();
@@ -47,15 +51,16 @@ var Tongue = (function () {
                     prefixs.push(currentPrefix);
                 }
             }
-            if (this.debug) {
-                var elems = document.body.getElementsByTagName("*");
-                for (var p = 0; p < prefixs.length; p++) {
-                    for (var e = 0; e < elems.length; e++) {
-                        if (elems[e].className.indexOf(prefixs[p]) >= 0) {
-                            // if (elems[e].innerHTML == '') {
+            var elems = document.body.getElementsByTagName("*");
+            for (var p = 0; p < prefixs.length; p++) {
+                for (var e = 0; e < elems.length; e++) {
+                    if (elems[e].className.indexOf(prefixs[p]) >= 0) {
+                        if (this.debug) {
                             elems[e].innerHTML = '<span class="tongue-error" style="background-color:red;padding:5px;white-space: pre-wrap;">[TONGUE] missing value: <span style="text-transform:uppercase;">(' + this.currentLanguage + '</span>) ' + elems[e].className + '</span>';
                             //elems[ e ].className += ' tongue-missing-value';
-                            // }
+                        }
+                        else {
+                            elems[e].innerHTML = '';
                         }
                     }
                 }

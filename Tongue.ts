@@ -22,13 +22,18 @@ class Tongue {
     **/
     public setDebug(debug: boolean): void{
         this.debug = debug;
+        this.update();
+    }
+
+    public isDebug(): boolean{
+        return this.debug;
     }
 
 
     private loadJSON(lang: String, callback: any) {
         var xobj = new XMLHttpRequest();
         xobj.overrideMimeType("application/json");
-        xobj.open('GET', 'languages/' + lang + '.json', true);
+        xobj.open('GET', 'translations/' + lang + '.json', true);
 
         xobj.onreadystatechange = function() {
             if (xobj.readyState == 4 && xobj.status == 200) {
@@ -64,23 +69,25 @@ class Tongue {
                     prefixs.push(currentPrefix);
                 }
             }
-            if( this.debug ){
-                var elems = document.body.getElementsByTagName("*");
 
-                for (var p = 0; p < prefixs.length; p++) {
-                    for (var e = 0; e < elems.length; e++) {
+            var elems = document.body.getElementsByTagName("*");
 
-                        if ( elems[e].className.indexOf(prefixs[ p ]) >= 0) {
+            for (var p = 0; p < prefixs.length; p++) {
+                for (var e = 0; e < elems.length; e++) {
 
-                            // if (elems[e].innerHTML == '') {
-                                elems[ e ].innerHTML = '<span class="tongue-error" style="background-color:red;padding:5px;white-space: pre-wrap;">[TONGUE] missing value: <span style="text-transform:uppercase;">(' + this.currentLanguage + '</span>) ' + elems[e].className + '</span>';
-                                //elems[ e ].className += ' tongue-missing-value';
-                            // }
+                    if ( elems[e].className.indexOf(prefixs[ p ]) >= 0) {
 
+                        if ( this.debug ) {
+                            elems[ e ].innerHTML = '<span class="tongue-error" style="background-color:red;padding:5px;white-space: pre-wrap;">[TONGUE] missing value: <span style="text-transform:uppercase;">(' + this.currentLanguage + '</span>) ' + elems[e].className + '</span>';
+                            //elems[ e ].className += ' tongue-missing-value';
+                        }else{
+                            elems[ e ].innerHTML = '';
                         }
+
                     }
                 }
             }
+
 
             for(let translation in this.languages[ this.currentLanguage ].translation ){
                 const classArray = document.getElementsByClassName( translation );
