@@ -17,7 +17,7 @@ var Tongue = (function () {
     Tongue.prototype.loadJSON = function (lang, callback) {
         var xobj = new XMLHttpRequest();
         xobj.overrideMimeType("application/json");
-        xobj.open('GET', 'languages/' + lang + '.json', true);
+        xobj.open('GET', 'translations/' + lang + '.json', true);
         xobj.onreadystatechange = function () {
             if (xobj.readyState == 4 && xobj.status == 200) {
                 // Required use of an anonymous callback
