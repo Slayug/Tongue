@@ -24,7 +24,7 @@ By default debug mode is enable. You can change it by two ways:
 Prevent click on link/flag if you have a version with server side to
 translate your page. It may be useful if some client disable javascript.
 You can prevent the click on each href like that:
-&#60;a href="/en" <b>data-tongue-flag</b>p&#62;href disable&#60;/ap&#62;
+&#60;a href="/en" <b>data-tongue-flag</b>&#62;href disable&#60;/a&#62;
 
 
 
