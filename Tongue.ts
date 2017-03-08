@@ -56,44 +56,29 @@ class Tongue {
             this.languages != undefined &&
             this.ready
         ){
-
-            //get each prefix of every translation
-
-            var prefixs = [];
-            var translation = this.languages[this.currentLanguage].translation;
-            for (var prefix in translation) {
-                const currentPrefix = prefix.substring(0, prefix.indexOf("."));
-                if (prefixs.indexOf(currentPrefix) < 0 &&
-                currentPrefix.length > 0) {
-                    //add
-                    prefixs.push(currentPrefix);
-                }
-            }
-
+            //fetch all elements
             var elems = document.body.getElementsByTagName("*");
 
-            for (var p = 0; p < prefixs.length; p++) {
-                for (var e = 0; e < elems.length; e++) {
+            for (var e = 0; e < elems.length; e++) {
 
-                    if ( elems[e].className.indexOf(prefixs[ p ]) >= 0) {
+                //ignore warning from typescript
+                const currentTranslation = (elems[ e ] as any).dataset[ "tongue" ];
+                //select only elements who have tongue data
+                if ( currentTranslation != undefined ) {
 
+                    let str = this.languages[ this.currentLanguage ].translation[ currentTranslation ];
+                    //if the translation is available
+                    if( str != undefined ){
+                        str = str.replace(/(?:\r\n|\r|\n)/g, '<br />');
+                        elems[ e ].innerHTML = str;
+                    }else{
                         if ( this.debug ) {
-                            elems[ e ].innerHTML = '<span class="tongue-error" style="background-color:red;padding:5px;white-space: pre-wrap;">[TONGUE] missing value: <span style="text-transform:uppercase;">(' + this.currentLanguage + '</span>) ' + elems[e].className + '</span>';
+                            elems[ e ].innerHTML = '<span class="tongue-error" style="background-color:red;padding:5px;white-space: pre-wrap;">[TONGUE] missing value: <span style="text-transform:uppercase;">(' + this.currentLanguage + '</span>) ' + (elems[ e ] as any).dataset[ "tongue" ] + '</span>';
                             //elems[ e ].className += ' tongue-missing-value';
                         }else{
                             elems[ e ].innerHTML = '';
                         }
-
                     }
-                }
-            }
-
-
-            for(let translation in this.languages[ this.currentLanguage ].translation ){
-                const classArray = document.getElementsByClassName( translation );
-                for(var c = 0; c < classArray.length; c++){
-                    const str = this.languages[ this.currentLanguage ].translation[ translation ].replace(/(?:\r\n|\r|\n)/g, '<br />');
-                    classArray[ c ].innerHTML = str;
                 }
             }
 
