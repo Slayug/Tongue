@@ -10,7 +10,9 @@ Summary<br>
 Instantiate the class: tongue = new Tongue('en');<br>
 You can easily change the translation with: tongue.switchLanguage('fr');<br>
 Put yours translations in translations folder.
-Make the link with yours translations on balise width dataset: &#60;p data-tongue="word.toast"&#62;&#60;/p&#62;
+Make the link with yours translations on balise width dataset:
+<br>
+&#60;p <b>data-tongue="word.toast"</b>&#62;&#60;/p&#62;
 
 ** If you change something dynamically on your page, with some text, you should update the translation **
 <br>
