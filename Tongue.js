@@ -48,6 +48,12 @@ var Tongue = (function () {
                         }
                     }
                 }
+                var currentFlag = elems[e].dataset["tongueFlag"];
+                if (currentFlag != undefined) {
+                    elems[e].onclick = function () {
+                        return false;
+                    };
+                }
             }
         }
         else if (!this.ready) {

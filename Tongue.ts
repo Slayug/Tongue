@@ -80,8 +80,16 @@ class Tongue {
                         }
                     }
                 }
-            }
 
+                //ignore warning from typescript
+                const currentFlag = (elems[ e ] as any).dataset[ "tongueFlag" ];
+                if( currentFlag != undefined ){
+                    //canceled link classed by tongueFlag
+                    (elems[ e ] as any).onclick = function(){
+                        return false;
+                    };
+                }
+            }
         }else if( ! this.ready ){
             this.tryUpdate();
         }
