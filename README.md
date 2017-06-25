@@ -53,4 +53,4 @@ You can prevent the click on each href like that:
 ```
 
 ### TODO
-Get the translation from the url, navigator language.
+Get the translation from the url
