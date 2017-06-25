@@ -3,16 +3,33 @@ class Tongue {
     private debug: boolean;
     private languages: any;
 
+
     private attemptDone: number;
     public readonly attemptBeforeFail: number = 3;
 
-    constructor(private currentLanguage: string) {
+    constructor(
+        private defaultLanguage?: string,
+        private currentLanguage?: string
+    ) {
         this.debug = true;
         this.ready = false;
         this.attemptDone = 0;
         this.languages = [];
 
+        if( this.currentLanguage === undefined ){
+            //get language from browser
+            this.currentLanguage = navigator.language || navigator.userLanguage;
+
+        }
         this.loadResource( this.currentLanguage );
+    }
+
+    public setDefaultLanguage( language: string ){
+        this.defaultLanguage = language;
+    }
+
+    public getDefaultLanguage( ): string{
+        return this.defaultLanguage;
     }
 
 
@@ -34,13 +51,20 @@ class Tongue {
         var xobj = new XMLHttpRequest();
         xobj.overrideMimeType("application/json");
         xobj.open('GET', 'translations/' + lang + '.json', true);
-
+        var self = this;
         xobj.onreadystatechange = function() {
             if (xobj.readyState == 4 && xobj.status == 200) {
                 // Required use of an anonymous callback
                 // as .open() will NOT return a value but simply returns undefined
                 //in asynchronous mode
                 callback(xobj.responseText);
+            }else if( xobj.status == 404 ){
+                //resource not found
+                if( self.currentLanguage.indexOf( '-' ) != -1 ){
+                    //try to reach the default language for this translation
+                    self.printDebug("[" + self.currentLanguage + "] not found, try to download ["+ self.currentLanguage.split( '-' )[ 0 ] + "].");
+                    self.switchLanguage( self.currentLanguage.split( '-' )[ 0 ] );
+                }
             }
         };
         xobj.send(null);
@@ -127,6 +151,7 @@ class Tongue {
             // Parse JSON string into object
             self.languages[ self.currentLanguage ] = JSON.parse( response );
             self.ready = true;
+            self.printDebug("success loading: " + self.currentLanguage );
             self.update();
         });
     }
@@ -139,6 +164,11 @@ class Tongue {
     **/
     private tryUpdate(){
         let self = this;
+        if( self.languages[ self.currentLanguage ] != null ){
+            self.ready = true;
+            self.update();
+            return;
+        }
         setTimeout(function(){
             if( self.attemptDone == self.attemptBeforeFail ){
                 self.printError( "[TONGUE]: cannot update, missing resource: " + self.currentLanguage + ".json" );
@@ -157,6 +187,12 @@ class Tongue {
     private printError(message: string){
         if( this.debug ){
             console.error( message );
+        }
+    }
+
+    private printDebug(message: string): void{
+        if( this.debug ){
+            console.log('[DEBUG] ' + message );
         }
     }
 

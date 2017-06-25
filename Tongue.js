@@ -1,13 +1,27 @@
 var Tongue = (function () {
-    function Tongue(currentLanguage) {
+    function Tongue(defaultLanguage, currentLanguage) {
+        this.defaultLanguage = defaultLanguage;
         this.currentLanguage = currentLanguage;
         this.attemptBeforeFail = 3;
         this.debug = true;
         this.ready = false;
         this.attemptDone = 0;
         this.languages = [];
+        if (this.currentLanguage === undefined) {
+            //get language from browser
+            this.currentLanguage = navigator.language || navigator.userLanguage;
+        }
         this.loadResource(this.currentLanguage);
     }
+    Tongue.prototype.setDefaultLanguage = function (language) {
+        this.defaultLanguage = language;
+    };
+    Tongue.prototype.getDefaultLanguage = function () {
+        return this.defaultLanguage;
+    };
+    /**
+    *   @param debug: Boolean
+    **/
     Tongue.prototype.setDebug = function (debug) {
         this.debug = debug;
         this.update();
@@ -19,22 +33,42 @@ var Tongue = (function () {
         var xobj = new XMLHttpRequest();
         xobj.overrideMimeType("application/json");
         xobj.open('GET', 'translations/' + lang + '.json', true);
+        var self = this;
         xobj.onreadystatechange = function () {
             if (xobj.readyState == 4 && xobj.status == 200) {
+                // Required use of an anonymous callback
+                // as .open() will NOT return a value but simply returns undefined
+                //in asynchronous mode
                 callback(xobj.responseText);
+            }
+            else if (xobj.status == 404) {
+                //resource not found
+                if (self.currentLanguage.indexOf('-') != -1) {
+                    //try to reach the default language for this translation
+                    self.printDebug("[" + self.currentLanguage + "] not found, try to download [" + self.currentLanguage.split('-')[0] + "].");
+                    self.switchLanguage(self.currentLanguage.split('-')[0]);
+                }
             }
         };
         xobj.send(null);
     };
+    /**
+    *   Write each translation for each balise
+    *   automatically called after loading language
+    **/
     Tongue.prototype.update = function () {
         if (this.currentLanguage != undefined &&
             this.languages != undefined &&
             this.ready) {
+            //fetch all elements
             var elems = document.body.getElementsByTagName("*");
             for (var e = 0; e < elems.length; e++) {
+                //ignore warning from typescript
                 var currentTranslation = elems[e].dataset["tongue"];
+                //select only elements who have tongue data
                 if (currentTranslation != undefined) {
                     var str = this.languages[this.currentLanguage].translation[currentTranslation];
+                    //if the translation is available
                     if (str != undefined) {
                         str = str.replace(/(?:\r\n|\r|\n)/g, '<br />');
                         elems[e].innerHTML = str;
@@ -42,14 +76,17 @@ var Tongue = (function () {
                     else {
                         if (this.debug) {
                             elems[e].innerHTML = '<span class="tongue-error" style="background-color:red;padding:5px;white-space: pre-wrap;">[TONGUE] missing value: <span style="text-transform:uppercase;">(' + this.currentLanguage + '</span>) ' + elems[e].dataset["tongue"] + '</span>';
+                            //elems[ e ].className += ' tongue-missing-value';
                         }
                         else {
                             elems[e].innerHTML = '';
                         }
                     }
                 }
+                //ignore warning from typescript
                 var currentFlag = elems[e].dataset["tongueFlag"];
                 if (currentFlag != undefined) {
+                    //canceled link classed by tongueFlag
                     elems[e].onclick = function () {
                         return false;
                     };
@@ -60,6 +97,12 @@ var Tongue = (function () {
             this.tryUpdate();
         }
     };
+    /**
+    *   Change the language,
+    *   if this one is already downloaded
+    *   do only an update,
+    *   else the resource
+    **/
     Tongue.prototype.switchLanguage = function (lang) {
         if (this.currentLanguage == lang) {
             return;
@@ -72,17 +115,36 @@ var Tongue = (function () {
             this.loadResource(this.currentLanguage);
         }
     };
+    /**
+    *   Fetch the lang
+    *   set ready true when resource is loaded
+    *   then call update, to refresh the text on the page
+    **/
     Tongue.prototype.loadResource = function (lang) {
+        //save context
         this.ready = false;
         var self = this;
         this.loadJSON(lang, function (response) {
+            // Parse JSON string into object
             self.languages[self.currentLanguage] = JSON.parse(response);
             self.ready = true;
+            self.printDebug("success loading: " + self.currentLanguage);
             self.update();
         });
     };
+    /**
+    *   Try do update function
+    *   until attemptDone are consumed
+    *   are ready will be true
+    *
+    **/
     Tongue.prototype.tryUpdate = function () {
         var self = this;
+        if (self.languages[self.currentLanguage] != null) {
+            self.ready = true;
+            self.update();
+            return;
+        }
         setTimeout(function () {
             if (self.attemptDone == self.attemptBeforeFail) {
                 self.printError("[TONGUE]: cannot update, missing resource: " + self.currentLanguage + ".json");
@@ -92,6 +154,7 @@ var Tongue = (function () {
                 self.update();
             }
             else {
+                //trying recall update later
                 self.tryUpdate();
             }
             self.attemptDone++;
@@ -100,6 +163,11 @@ var Tongue = (function () {
     Tongue.prototype.printError = function (message) {
         if (this.debug) {
             console.error(message);
+        }
+    };
+    Tongue.prototype.printDebug = function (message) {
+        if (this.debug) {
+            console.log('[DEBUG] ' + message);
         }
     };
     return Tongue;
