@@ -19,10 +19,15 @@ Put yours translations in translations folder, in json file (en.json):
 }
 ```
 In your javascript part, instantiate the class:
-`tongue = new Tongue('en');`
+`tongue = new Tongue();`
 
 You can easily change the translation with:
 `tongue.switchLanguage('en');`
+
+You can set a defaultLanguage if you wish.
+For the current language, by default if you specify nothing, it will take this of the browser.
+`Tongue( defaultLanguage?:string, currentLanguage?:string );`
+An other thing, if the default language of the browser is 'en-US' and you don't have this file available, Tongue will check if you have 'en' file, after have noticed the 'en-US.json' is not reachable.
 
 Then in your json balise, set the link with yours translations with dataset:
 ```html
@@ -32,7 +37,7 @@ Then in your json balise, set the link with yours translations with dataset:
 ** **If you change something dynamically on your page, with some text, you should update the translation** **
 `tongue.update();`
 
-###Debug mode
+### Debug mode
 Debug mode show you if there is a missing translation.
 By default debug mode is enable. You can change it by two ways:
 
