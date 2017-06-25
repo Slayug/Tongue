@@ -19,7 +19,10 @@ class Tongue {
         if( this.currentLanguage === undefined ){
             //get language from browser
             this.currentLanguage = navigator.language || navigator.userLanguage;
-
+        }
+        if( this.currentLanguage === undefined ){
+            //navigator don't give any information try to reach en translations
+            this.currentLanguage = 'en';
         }
         this.loadResource( this.currentLanguage );
     }

@@ -11,6 +11,10 @@ var Tongue = (function () {
             //get language from browser
             this.currentLanguage = navigator.language || navigator.userLanguage;
         }
+        if (this.currentLanguage === undefined) {
+            //navigator don't give any information try to reach en translations
+            this.currentLanguage = 'en';
+        }
         this.loadResource(this.currentLanguage);
     }
     Tongue.prototype.setDefaultLanguage = function (language) {
