@@ -12,7 +12,7 @@ var Tongue = (function () {
             this.currentLanguage = navigator.language || navigator.userLanguage;
         }
         if (this.currentLanguage === undefined) {
-            //navigator don't give any information try to reach en translations
+            //navigator doesn't give any information try to reach en translations
             this.currentLanguage = 'en';
         }
         this.loadResource(this.currentLanguage);
