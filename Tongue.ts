@@ -64,6 +64,12 @@ class Tongue {
                     //try to reach the default language for this translation
                     self.printDebug("[" + self.currentLanguage + "] not found, try to download ["+ self.currentLanguage.split( '-' )[ 0 ] + "].");
                     self.switchLanguage( self.currentLanguage.split( '-' )[ 0 ] );
+                }else{
+                    //guess already try sub translation
+                    //now try default language if not undefined
+                    if( self.defaultLanguage != undefined ){
+                        self.switchLanguage( self.defaultLanguage );
+                    }
                 }
             }
         };

@@ -48,6 +48,13 @@ var Tongue = (function () {
                     self.printDebug("[" + self.currentLanguage + "] not found, try to download [" + self.currentLanguage.split('-')[0] + "].");
                     self.switchLanguage(self.currentLanguage.split('-')[0]);
                 }
+                else {
+                    //guess already try sub translation
+                    //now try default language if not undefined
+                    if (self.defaultLanguage != undefined) {
+                        self.switchLanguage(self.defaultLanguage);
+                    }
+                }
             }
         };
         xobj.send(null);
